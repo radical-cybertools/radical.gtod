@@ -173,24 +173,20 @@ class RunTwine(Command):
 # FIXME: pip3 bug: binaries files cannot be installed into bin.
 # NOTE : disable to avoid stupid/inconsequrntial bwheel error
 # compile gtod
-try:
-    compiler = new_compiler(verbose=1)
-    objs = compiler.compile(sources=['src/radical/gtod/gtod.c'])
-    exe  = compiler.link_executable(objs, 'bin/radical-gtod')
-except:
-    with open('bin/radical-gtod', 'w') as fout:
-        fout.write('#!/usr/bin/env python3\n'
-                   'import time\n'
-                   'print time.time()\n')
-    os.chmod('bin/radical-gtod', 0o755)
+
+from distutils.ccompiler import new_compiler
+
+compiler = new_compiler(verbose=1)
+objs = compiler.compile(sources=['src/radical/gtod/gtod.c'])
+exe  = compiler.link_executable(objs, 'src/radical/gtod/radical-gtod')
 
 
 # ------------------------------------------------------------------------------
 #
 # This copies the contents like examples/ dir under sys.prefix/share/$name
 # It needs the MANIFEST.in entries to work.
-base = 'share/%s' % name
-df   = []
+base = 'bin'
+df   = [('bin/', ['src/radical/gtod/radical-gtod'])]
 
 
 # ------------------------------------------------------------------------------
@@ -226,13 +222,14 @@ setup_args = {
     'packages'           : find_namespace_packages('src', include=['radical.*']),
     'package_dir'        : {'': 'src'},
     'scripts'            : [
-                            'bin/radical-gtod',
+                         #  'bin/radical-gtod',
                             'bin/radical-gtod-version',
                            ],
     'package_data'       : {'': ['*.txt', '*.sh', '*.json', '*.gz', '*.c',
-                                 '*.md', 'VERSION', 'SDIST', sdist_name]},
+                                 '*.md', 'VERSION', 'SDIST', sdist_name,
+                                 'radical-gtod']},
   # 'setup_requires'     : ['pytest-runner'],
-    'install_requires'   : ['radical.utils'],
+    'install_requires'   : [],
     'tests_require'      : ['pytest',
                             'pylint',
                             'flake8',
