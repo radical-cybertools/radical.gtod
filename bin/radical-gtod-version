@@ -1,0 +1,7 @@
+#!/usr/bin/env python
+
+import radical.gtod
+
+print("version: %s" % radical.gtod.version)
+print("details: %s" % radical.gtod.version_detail)
+
