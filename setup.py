@@ -12,6 +12,7 @@ import re
 import os
 import sys
 import glob
+import time
 import shutil
 
 import subprocess as sp
@@ -31,9 +32,9 @@ def sh_callout(cmd):
 
     p = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE, shell=True)
 
-    stdout, stderr = p.communicate()
-    ret            = p.returncode
-    return stdout, stderr, ret
+    out, err = p.communicate()
+    ret      = p.returncode
+    return out, err, ret
 
 
 # ------------------------------------------------------------------------------
@@ -174,11 +175,43 @@ class RunTwine(Command):
 # NOTE : disable to avoid stupid/inconsequrntial bwheel error
 # compile gtod
 
-from distutils.ccompiler import new_compiler
+try:
+    from distutils.ccompiler import new_compiler
 
-compiler = new_compiler(verbose=1)
-objs = compiler.compile(sources=['src/radical/gtod/gtod.c'])
-exe  = compiler.link_executable(objs, 'src/radical/gtod/radical-gtod')
+    src      = 'src/radical/gtod/gtod.c'
+    tgt      = 'src/radical/gtod/radical-gtod'
+    compiler = new_compiler(verbose=1)
+    objs     = compiler.compile(sources=[src])
+    exe      = compiler.link_executable(objs, tgt)
+
+    # test the resulting binary - and if it does not seem to work, replace it
+    # by a shell script which provides a poor-man's version of the C code.
+    now_1 = time.time()
+    out, err, ret = sh_callout(tgt)
+    now_2 = time.time()
+    now   = float(out)
+
+    assert(now_1 <= now  )
+    assert(now   <= now_2)
+    assert(now_2  - now_1 <= 0.01)
+
+except:
+    # need a replacement
+    with open(tgt, 'w') as fout:
+        fout.write('''#!/bin/sh
+
+nsec=$(date +%N | cut -c 1-6)
+
+if test -z "$nsec"
+then
+    python3 -c 'import time; print("%.6f" % time.time())'
+else
+    echo "$(date +%s).$nsec"
+fi
+
+''')
+    os.system('chmod 0755 %s' % tgt)
+
 
 
 # ------------------------------------------------------------------------------
