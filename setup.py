@@ -193,10 +193,7 @@ try:
     assert(now   <= now_2)
     assert(now_2  - now_1 <= 1.)
 
-except Exception:
-    e_info = sys.exc_info()
-    print('[WARN] Exception was raised: ', e_info[1].__class__.__name__)
-    traceback.print_exc(file=sys.stdout)
+except:
     # need a replacement
     with open(tgt, 'w') as fout:
         fout.write('''#!/bin/sh
@@ -211,6 +208,8 @@ else
 fi
 
 ''')
+        fout.write('# [WARNING] Exception during compilation:\n')
+        fout.write('# %s\n' % '\n# '.join(traceback.format_exc().splitlines()))
     os.system('chmod 0755 %s' % tgt)
 
 
