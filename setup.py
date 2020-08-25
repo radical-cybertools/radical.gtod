@@ -171,8 +171,11 @@ class RunTwine(Command):
 
 
 # ------------------------------------------------------------------------------
+# compile radical-gtod
+#
 # FIXME: pip3 bug: binaries files cannot be installed into bin.
-# NOTE : disable to avoid stupid/inconsequentially wheel error compile gtod
+# NOTE : disable to avoid stupid/inconsequentially wheel error
+# 
 src = 'src/radical/gtod/gtod.c'
 tgt = 'src/radical/gtod/radical-gtod'
 try:
