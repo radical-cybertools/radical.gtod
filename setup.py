@@ -11,8 +11,8 @@ __license__   = 'GPL.v3'
 import re
 import os
 import sys
-import glob
 import time
+import traceback
 import shutil
 
 import subprocess as sp
@@ -136,7 +136,7 @@ def get_version(_mod_root):
         return _version_base, _version_detail, _sdist_name, _path
 
     except Exception as e:
-        raise RuntimeError('Could not extract/set version: %s' % e)
+        raise RuntimeError('Could not extract/set version: %s' % e) from e
 
 
 # ------------------------------------------------------------------------------
@@ -171,15 +171,16 @@ class RunTwine(Command):
 
 
 # ------------------------------------------------------------------------------
+# compile radical-gtod
+#
 # FIXME: pip3 bug: binaries files cannot be installed into bin.
-# NOTE : disable to avoid stupid/inconsequrntial bwheel error
-# compile gtod
-
+# NOTE : disable to avoid stupid/inconsequentially wheel error
+# 
+src = 'src/radical/gtod/gtod.c'
+tgt = 'src/radical/gtod/radical-gtod'
 try:
     from distutils.ccompiler import new_compiler
 
-    src      = 'src/radical/gtod/gtod.c'
-    tgt      = 'src/radical/gtod/radical-gtod'
     compiler = new_compiler(verbose=1)
     objs     = compiler.compile(sources=[src])
     exe      = compiler.link_executable(objs, tgt)
@@ -193,7 +194,7 @@ try:
 
     assert(now_1 <= now  )
     assert(now   <= now_2)
-    assert(now_2  - now_1 <= 0.01)
+    assert(now_2  - now_1 <= 1.)
 
 except:
     # need a replacement
@@ -210,6 +211,8 @@ else
 fi
 
 ''')
+        fout.write('# [WARNING] Exception during compilation:\n')
+        fout.write('# %s\n' % '\n# '.join(traceback.format_exc().splitlines()))
     os.system('chmod 0755 %s' % tgt)
 
 
