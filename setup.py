@@ -14,11 +14,37 @@ import sys
 import time
 import traceback
 import shutil
+import distutils
 
 import subprocess as sp
 
-
 from setuptools import setup, Command, find_namespace_packages
+
+
+# gtod is compiled, and pip tries to cache compiled modules in a wheel.  On
+# resources where $HOME is on a shared filesystem and serves multiple hosts with
+# different arhitecture, pip will pull the cached wheel for the wrong
+# architecture.  The installation then succeeds, but the module is unusable and
+# leads to runtime errors which are hard to trace.  We thus could convince pip
+# to not cache the wheel.  Well, pip does not allow to enforce this, so instead
+# we could convince pip to not build a wheel at all.  Well, pip does not allow
+# this either.  So instead we make the wheel build fail on purpose, and now pip
+# will compile and install from sources every time.  Alas, this will now print
+# big fat errors on every successful install :-(
+bdist_wheel = None
+
+try:
+    import wheel.bdist_wheel
+    class bdist_wheel(wheel.bdist_wheel.bdist_wheel):
+        def run(self, *args, **kwargs):
+            sys.stderr.write("----------------------------------------\n")
+            sys.stderr.write(" This intentional error can be ignored  \n")
+            sys.stderr.write("----------------------------------------\n")
+            raise distutils.errors.DistutilsClassError("ignore this error")
+
+except ModuleNotFoundError:
+    pass
+
 
 
 # ------------------------------------------------------------------------------
@@ -175,7 +201,7 @@ class RunTwine(Command):
 #
 # FIXME: pip3 bug: binaries files cannot be installed into bin.
 # NOTE : disable to avoid stupid/inconsequentially wheel error
-# 
+#
 src = 'src/radical/gtod/gtod.c'
 tgt = 'src/radical/gtod/radical-gtod'
 try:
@@ -286,7 +312,8 @@ setup_args = {
     # sys.prefix/share/$name
     # It needs the MANIFEST.in entries to work.
     'data_files'         : df,
-    'cmdclass'           : {'upload': RunTwine},
+    'cmdclass'           : {'upload'     : RunTwine,
+                            'bdist_wheel': bdist_wheel},
 }
 
 
