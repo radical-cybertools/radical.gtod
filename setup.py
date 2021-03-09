@@ -31,8 +31,6 @@ from setuptools import setup, Command, find_namespace_packages
 # this either.  So instead we make the wheel build fail on purpose, and now pip
 # will compile and install from sources every time.  Alas, this will now print
 # big fat errors on every successful install :-(
-bdist_wheel = None
-
 try:
     import wheel.bdist_wheel
     class bdist_wheel(wheel.bdist_wheel.bdist_wheel):
