@@ -136,7 +136,7 @@ def get_version(_mod_root):
         return _version_base, _version_detail, _sdist_name, _path
 
     except Exception as e:
-        raise RuntimeError('Could not extract/set version: %s' % e)
+        raise RuntimeError('Could not extract/set version: %s' % e) from e
 
 
 # ------------------------------------------------------------------------------
@@ -166,7 +166,7 @@ class RunTwine(Command):
     def initialize_options(self): pass
     def finalize_options(self):   pass
     def run(self):
-        out,  err, ret = sh_callout('python3 setup.py sdist upload -r pypi')
+        _, _, ret = sh_callout('python3 setup.py sdist upload -r pypi')
         raise SystemExit(ret)
 
 
@@ -187,7 +187,7 @@ try:
     # test the resulting binary - and if it does not seem to work, replace it
     # by a shell script which provides a poor-man's version of the C code.
     now_1 = time.time()
-    out, err, ret = sh_callout(tgt)
+    out, _, _ = sh_callout(tgt)
     now_2 = time.time()
     now   = float(out)
 
