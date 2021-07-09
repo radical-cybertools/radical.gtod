@@ -244,7 +244,7 @@ setup_args = {
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Environment :: Console',
-        'License :: OSI Approved :: LGPL.v3 License',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
