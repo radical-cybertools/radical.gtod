@@ -299,6 +299,12 @@ os.system('rm -rf src/%s.egg-info' % name)
 # os.system('rm -rf %s/VERSION.git'  % path)
 # os.system('rm -rf %s/SDIST'        % path)
 
+# gtod is compiled, and pip tries to cache compiled modules in a wheel.
+# On resources, where $HOME is on a shared filesystem and serves multiple hosts
+# with different architectures, pip will pull the cached wheel for the wrong
+# architecture. The installation then succeeds, but the module is unusable and
+# leads to runtime errors which are hard to trace. Thus, remove cached wheel.
+os.system('pip cache remove %s' % name)
 
 # ------------------------------------------------------------------------------
 
