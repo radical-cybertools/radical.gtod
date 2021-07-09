@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-__author__	  = 'RADICAL-Cybertools Team'
-__email__	  = 'info@radical-cybertools.org'
+__author__    = 'RADICAL-Cybertools Team'
+__email__     = 'info@radical-cybertools.org'
 __copyright__ = 'Copyright 2020, The RADICAL-Cybertools Team'
-__license__   = 'MIT'
+__license__   = 'LGPL.v3'
 
 import time
 import radical.utils as ru

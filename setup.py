@@ -11,8 +11,8 @@ __license__   = 'GPL.v3'
 import re
 import os
 import sys
-import glob
 import time
+import traceback
 import shutil
 
 import subprocess as sp
@@ -171,15 +171,16 @@ class RunTwine(Command):
 
 
 # ------------------------------------------------------------------------------
+# compile radical-gtod
+#
 # FIXME: pip3 bug: binaries files cannot be installed into bin.
-# NOTE : disable to avoid stupid/inconsequrntial bwheel error
-# compile gtod
-
+# NOTE : disable to avoid stupid/inconsequentially wheel error
+#
+src = 'src/radical/gtod/gtod.c'
+tgt = 'src/radical/gtod/radical-gtod'
 try:
     from distutils.ccompiler import new_compiler
 
-    src      = 'src/radical/gtod/gtod.c'
-    tgt      = 'src/radical/gtod/radical-gtod'
     compiler = new_compiler(verbose=1)
     objs     = compiler.compile(sources=[src])
     exe      = compiler.link_executable(objs, tgt)
@@ -193,7 +194,7 @@ try:
 
     assert(now_1 <= now  )
     assert(now   <= now_2)
-    assert(now_2  - now_1 <= 0.01)
+    assert(now_2  - now_1 <= 1.)
 
 except:
     # need a replacement
@@ -210,6 +211,8 @@ else
 fi
 
 ''')
+        fout.write('# [WARNING] Exception during compilation:\n')
+        fout.write('# %s\n' % '\n# '.join(traceback.format_exc().splitlines()))
     os.system('chmod 0755 %s' % tgt)
 
 
@@ -241,7 +244,7 @@ setup_args = {
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Environment :: Console',
-        'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: LGPL.v3 License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
@@ -296,6 +299,12 @@ os.system('rm -rf src/%s.egg-info' % name)
 # os.system('rm -rf %s/VERSION.git'  % path)
 # os.system('rm -rf %s/SDIST'        % path)
 
+# gtod is compiled, and pip tries to cache compiled modules in a wheel.
+# On resources, where $HOME is on a shared filesystem and serves multiple hosts
+# with different architectures, pip will pull the cached wheel for the wrong
+# architecture. The installation then succeeds, but the module is unusable and
+# leads to runtime errors which are hard to trace. Thus, remove cached wheel.
+os.system('pip cache remove %s' % name)
 
 # ------------------------------------------------------------------------------
 
