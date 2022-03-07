@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-__author__    = 'RADICAL Team'
-__email__     = 'radical@radical-project.org'
-__copyright__ = 'Copyright date 2020, RADICAL Team'
-__license__   = 'GPL.v3'
+__author__    = 'RADICAL-Cybertools Team'
+__email__     = 'info@radical-cybertools.org'
+__copyright__ = 'Copyright 2013-20, The RADICAL-Cybertools Team'
+__license__   = 'MIT'
 
 
 ''' Setup script, only usable via pip. '''
@@ -11,12 +11,12 @@ __license__   = 'GPL.v3'
 import re
 import os
 import sys
+import glob
 import time
 import traceback
 import shutil
 
 import subprocess as sp
-
 
 from setuptools import setup, Command, find_namespace_packages
 
@@ -25,6 +25,8 @@ from setuptools import setup, Command, find_namespace_packages
 name     = 'radical.gtod'
 mod_root = 'src/radical/gtod/'
 
+sdist_level = int(os.environ.get('SDIST_LEVEL', 0))
+os.environ['SDIST_LEVEL'] = str(sdist_level + 1)
 
 # ------------------------------------------------------------------------------
 #
@@ -32,9 +34,9 @@ def sh_callout(cmd):
 
     p = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE, shell=True)
 
-    out, err = p.communicate()
-    ret      = p.returncode
-    return out, err, ret
+    stdout, stderr = p.communicate()
+    ret            = p.returncode
+    return stdout, stderr, ret
 
 
 # ------------------------------------------------------------------------------
@@ -68,7 +70,7 @@ def get_version(_mod_root):
         if not src_root:
             src_root = '.'
 
-        with open(src_root + '/VERSION', 'r') as f:
+        with open(src_root + '/VERSION', 'r', encoding='utf-8') as f:
             _version_base = f.readline().strip()
 
         # attempt to get version detail information from git
@@ -106,14 +108,15 @@ def get_version(_mod_root):
 
         # make sure the version files exist for the runtime version inspection
         _path = '%s/%s' % (src_root, _mod_root)
-        with open(_path + '/VERSION', 'w') as f:
-            f.write(_version + '\n')
+        with open(_path + '/VERSION', 'w', encoding='utf-8') as f:
+            f.write(_version_base + '\n')
+            f.write(_version      + '\n')
 
-        _sdist_name = '%s-%s.tar.gz' % (name, _version)
-        _sdist_name = _sdist_name.replace('/', '-')
-        _sdist_name = _sdist_name.replace('@', '-')
-        _sdist_name = _sdist_name.replace('#', '-')
-        _sdist_name = _sdist_name.replace('_', '-')
+        _sdist_name = '%s-%s.tar.gz' % (name, _version_base)
+      # _sdist_name = _sdist_name.replace('/', '-')
+      # _sdist_name = _sdist_name.replace('@', '-')
+      # _sdist_name = _sdist_name.replace('#', '-')
+      # _sdist_name = _sdist_name.replace('_', '-')
 
         if '--record'    in sys.argv or \
            'bdist_egg'   in sys.argv or \
@@ -125,12 +128,12 @@ def get_version(_mod_root):
             # the formerly derived version as ./VERSION
             shutil.move("VERSION", "VERSION.bak")              # backup
             shutil.copy("%s/VERSION" % _path, "VERSION")       # version to use
-            os.system  ("python3 setup.py sdist")               # build sdist
+            os.system  ("python3 setup.py sdist")              # build sdist
             shutil.copy('dist/%s' % _sdist_name,
                         '%s/%s'   % (_mod_root, _sdist_name))  # copy into tree
             shutil.move('VERSION.bak', 'VERSION')              # restore version
 
-        with open(_path + '/SDIST', 'w') as f:
+        with open(_path + '/SDIST', 'w', encoding='utf-8') as f:
             f.write(_sdist_name + '\n')
 
         return _version_base, _version_detail, _sdist_name, _path
@@ -140,21 +143,21 @@ def get_version(_mod_root):
 
 
 # ------------------------------------------------------------------------------
-# check python version. we need >= 3.6
-if  sys.hexversion < 0x03060000:
-    raise RuntimeError('%s requires Python 3.6 or higher' % name)
+# get version info -- this will create VERSION and srcroot/VERSION
+version, version_detail, sdist_name, path = get_version(mod_root)
 
 
 # ------------------------------------------------------------------------------
-# get version info -- this will create VERSION and srcroot/VERSION
-version, version_detail, sdist_name, path = get_version(mod_root)
+# check python version, should be >= 3.6
+if sys.hexversion < 0x03060000:
+    raise RuntimeError('ERROR: %s requires Python 3.6 or newer' % name)
 
 
 # ------------------------------------------------------------------------------
 #
 def read(fname):
     try:
-        return open(fname).read()
+        return open(fname, encoding='utf-8').read()
     except Exception:
         return ''
 
@@ -294,10 +297,17 @@ setup_args = {
 #
 setup(**setup_args)
 
-os.system('rm -rf src/%s.egg-info' % name)
-# os.system('rm -rf %s/VERSION'      % path)
-# os.system('rm -rf %s/VERSION.git'  % path)
-# os.system('rm -rf %s/SDIST'        % path)
+
+# ------------------------------------------------------------------------------
+# clean temporary files from source tree
+if sdist_level == 0:
+    os.system('rm -vrf src/%s.egg-info' % name)
+    os.system('rm -vf  %s/%s'           % (path, sdist_name))
+    os.system('rm -vf  %s/VERSION'      % path)
+    os.system('rm -vf  %s/SDIST'        % path)
+    os.system('rm -vf  %s/gtod.o'       % path)
+    os.system('rm -vf  %s/radical-gtod' % path)
+
 
 # gtod is compiled, and pip tries to cache compiled modules in a wheel.
 # On resources, where $HOME is on a shared filesystem and serves multiple hosts
@@ -305,6 +315,7 @@ os.system('rm -rf src/%s.egg-info' % name)
 # architecture. The installation then succeeds, but the module is unusable and
 # leads to runtime errors which are hard to trace. Thus, remove cached wheel.
 os.system('pip cache remove %s' % name)
+
 
 # ------------------------------------------------------------------------------
 
