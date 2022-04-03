@@ -281,7 +281,7 @@ setup_args = {
                                  '*.md', 'VERSION', 'SDIST', sdist_name,
                                  'radical-gtod']},
   # 'setup_requires'     : ['pytest-runner'],
-    'install_requires'   : [],
+    'install_requires'   : ['radical.utils'],
     'tests_require'      : ['pytest',
                             'pylint',
                             'flake8',
