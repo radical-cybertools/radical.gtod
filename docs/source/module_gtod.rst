@@ -2,13 +2,12 @@
 Module Documentation
 ********************
 
-.. todo:: Intro to the RADICAL gtod module
-
 ..
-    PluginManager -- :mod:`radical.utils.plugin_manager`
+    GTOD -- :mod:`radical.gtod`
     ----------------------------------------------------
-    
-    .. automodule:: radical.utils.plugin_manager
-       :show-inheritance:
-       :members: PluginManager
+
+This module installes a small, self-contained binary which prints current time
+of day in seconds since epoch on stdout.
+
+    .. automodule:: radical.gtod
 
