@@ -22,8 +22,9 @@ from setuptools import setup, Command, find_namespace_packages
 
 
 # ------------------------------------------------------------------------------
-name     = 'radical.utils'
-mod_root = 'src/radical/utils/'
+base     = 'gtod'
+name     = 'radical.%s'      % base
+mod_root = 'src/radical/%s/' % base
 
 # ------------------------------------------------------------------------------
 #
@@ -256,7 +257,12 @@ setup_args = {
     'author_email'       : 'radical@rutgers.edu',
     'maintainer'         : 'The RADICAL Group',
     'maintainer_email'   : 'radical@rutgers.edu',
-    'url'                : 'https://www.github.com/radical-cybertools/radical.gtod/',
+    'url'                : 'http://radical-cybertools.github.io/%s/' % name,
+    'project_urls'       : {
+        'Documentation': 'https://radical%s.readthedocs.io/en/latest/' % base,
+        'Source'       : 'https://github.com/radical-cybertools/%s/'   % name,
+        'Issues' : 'https://github.com/radical-cybertools/%s/issues'   % name'
+    },
     'license'            : 'GPL3',
     'keywords'           : 'radical distributed computing',
     'python_requires'    : '>=3.6',
@@ -284,7 +290,6 @@ setup_args = {
     'package_data'       : {'': ['*.txt', '*.sh', '*.json', '*.gz', '*.c',
                                  '*.md', 'VERSION', 'SDIST', sdist_name,
                                  'radical-gtod']},
-  # 'setup_requires'     : ['pytest-runner'],
     'install_requires'   : requirements,
     'zip_safe'           : False,
     'data_files'         : df,
