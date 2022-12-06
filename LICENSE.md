@@ -5,7 +5,7 @@
                             [OSI Approved License]
 ================================================================================
 
-This license is a set of additional permissions added to version 3 of the GNU 
+This license is a set of additional permissions added to version 3 of the GNU
 General Public License.
 
 
@@ -69,10 +69,10 @@ refers to a function or data to be supplied by an Application that uses the
 facility (other than as an argument passed when the facility is invoked), then
 you may convey a copy of the modified version:
 
-  a) under this License, provided that you make a good faith effort to ensure 
+  a) under this License, provided that you make a good faith effort to ensure
      that, in the event an Application does not supply the function or data, the
      facility still operates, and performs whatever part of its purpose remains
-     meaningful, or 
+     meaningful, or
 
   b) under the GNU GPL, with none of the additional permissions of this License
      applicable to that copy.
@@ -150,7 +150,7 @@ library under terms of your choice, if you do both of the following:
      Library, uncombined with any other library facilities, conveyed under the
      terms of this License.  
      
-  b) Give prominent notice with the combined library that part of it is a work 
+  b) Give prominent notice with the combined library that part of it is a work
      based on the Library, and explaining where to find the accompanying
      uncombined form of the same work.
 
