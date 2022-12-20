@@ -236,7 +236,6 @@ fi
 #
 # This copies the contents like examples/ dir under sys.prefix/share/$name
 # It needs the MANIFEST.in entries to work.
-base = 'bin'
 df   = [('bin/', ['src/radical/gtod/radical-gtod'])]
 
 
