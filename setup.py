@@ -139,6 +139,13 @@ def get_version(_mod_root):
       # _sdist_name = _sdist_name.replace('#', '-')
       # _sdist_name = _sdist_name.replace('_', '-')
 
+        if not os.path.isfile('%s/%s' % (_path, _sdist_name)):
+            sdist_name = '%s-%s.tar.gz' % (name.replace('.', '_'), _version_base)
+
+        if not os.path.isfile('%s/%s' % (_path, _sdist_name)):
+            raise RuntimeError('Could not find sdist tarball %s/%s'
+                               % (_path, _sdist_name))
+
         if '--record'    in sys.argv or \
            'bdist_egg'   in sys.argv or \
            'bdist_wheel' in sys.argv    :
