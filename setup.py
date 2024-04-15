@@ -139,12 +139,9 @@ def get_version(_mod_root):
       # _sdist_name = _sdist_name.replace('#', '-')
       # _sdist_name = _sdist_name.replace('_', '-')
 
+        # setuptools 69.5 does changes naming scheme
         if not os.path.isfile('%s/%s' % (_path, _sdist_name)):
-            sdist_name = '%s-%s.tar.gz' % (name.replace('.', '_'), _version_base)
-
-        if not os.path.isfile('%s/%s' % (_path, _sdist_name)):
-            raise RuntimeError('Could not find sdist tarball %s/%s'
-                               % (_path, _sdist_name))
+            _sdist_name = '%s-%s.tar.gz' % (name.replace('.', '_'), _version_base)
 
         if '--record'    in sys.argv or \
            'bdist_egg'   in sys.argv or \
@@ -256,7 +253,7 @@ with open('%s/requirements.txt' % root, encoding='utf-8') as freq:
 #
 setup_args = {
     'name'               : name,
-    'namespace_packages' : ['radical'],
+  # 'namespace_packages' : ['radical'],
     'version'            : version,
     'description'        : 'returns seconds since epoch in subsecond resolution.',
     'author'             : 'RADICAL Team',
