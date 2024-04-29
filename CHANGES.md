@@ -7,6 +7,12 @@
             ?q=is%3Aissue+is%3Aopen+
     
 
+1.52.0 Release                                                        2024-04-15
+--------------------------------------------------------------------------------
+
+  - fix for setuptools upgrade
+    
+
 1.47.0 Release                                                        2024-02-08
 --------------------------------------------------------------------------------
 
@@ -86,4 +92,7 @@ Version 0.0.1 release                                                 2020-07-25
     
 --------------------------------------------------------------------------------
 
-  - (HEAD -> master, origin/devel, origin/HEAD, devel) devel version bump
+  - (HEAD -> master, origin/devel, origin/HEAD, devel) fix the fix
+  - devel version bump
+  - (HEAD -> master, origin/devel, origin/HEAD, devel) fix the fix
+  - devel version bump
