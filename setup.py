@@ -9,6 +9,8 @@ __license__   = 'MIT'
 ''' Setup script, only usable via pip. '''
 
 import os
+import time
+import traceback
 
 import subprocess as sp
 
@@ -18,14 +20,14 @@ from setuptools import setup, Command, find_namespace_packages
 
 # ------------------------------------------------------------------------------
 #
-base     = 'utils'
+base     = 'gtod'
 name     = 'radical.%s'      % base
 mod_root = 'src/radical/%s/' % base
 
 scripts  = list(glob('bin/*'))
 root     = os.path.dirname(__file__) or '.'
+readme   = open('%s/README.md' % root, encoding='utf-8').read()
 descr    = 'returns seconds since epoch in subsecond resolution.'
-descr    = "RADICAL-Cybertools epoch time utility."
 keywords = ['radical', 'cybertools', 'utilities', 'gtod', 'time', 'epoch']
 
 share    = 'share/%s' % name
@@ -245,8 +247,8 @@ setup(**setup_args)
 # clean temporary files from source tree
 os.system('rm -vrf src/%s.egg-info' % name)
 os.system('rm -vf  %s'              % version_path)
-os.system('rm -vf  %s/gtod.o'       % path)
-os.system('rm -vf  %s/radical-gtod' % path)
+os.system('rm -vf  %s/gtod.o'       % mod_root)
+os.system('rm -vf  %s/radical-gtod' % mod_root)
 
 
 # gtod is compiled, and pip tries to cache compiled modules in a wheel.
