@@ -7,6 +7,13 @@
             ?q=is%3Aissue+is%3Aopen+
     
 
+1.60.0 Release                                                        2024-05-10
+--------------------------------------------------------------------------------
+
+  - set version requirement for RCT stack
+  - sync with RU
+    
+
 1.52.0 Release                                                        2024-04-15
 --------------------------------------------------------------------------------
 
@@ -92,7 +99,3 @@ Version 0.0.1 release                                                 2020-07-25
     
 --------------------------------------------------------------------------------
 
-  - (HEAD -> master, origin/devel, origin/HEAD, devel) fix the fix
-  - devel version bump
-  - (HEAD -> master, origin/devel, origin/HEAD, devel) fix the fix
-  - devel version bump
