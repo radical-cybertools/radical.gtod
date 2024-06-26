@@ -143,8 +143,8 @@ class RunTwine(Command):
 # FIXME: pip3 bug: binaries files cannot be installed into bin.
 # NOTE : disable to avoid stupid/inconsequentially wheel error
 #
-src = 'src/radical/gtod/gtod.c'
-tgt = 'src/radical/gtod/radical-gtod'
+src = '%s/gtod.c'       % mod_root
+tgt = '%s/radical-gtod' % mod_root
 
 # try a static build
 if not os.path.exists(tgt):
@@ -161,6 +161,7 @@ if not os.path.exists(tgt):
     except:
         pass
 
+# try a dynamic build with distutils
 if not os.path.exists(tgt):
     try:
         from distutils.ccompiler import new_compiler
@@ -183,8 +184,9 @@ if not os.path.exists(tgt):
     except:
         pass
 
+# as fallback, use a simple shell script
 if not os.path.exists(tgt):
-    # need a replacement
+
     with open(tgt, 'w') as fout:
         fout.write('''#!/bin/sh
 
@@ -201,7 +203,6 @@ fi
         fout.write('# [WARNING] Exception during compilation:\n')
         fout.write('# %s\n' % '\n# '.join(traceback.format_exc().splitlines()))
     os.system('chmod 0755 %s' % tgt)
-
 
 
 # ------------------------------------------------------------------------------
