@@ -143,28 +143,50 @@ class RunTwine(Command):
 # FIXME: pip3 bug: binaries files cannot be installed into bin.
 # NOTE : disable to avoid stupid/inconsequentially wheel error
 #
-src = 'src/radical/gtod/gtod.c'
-tgt = 'src/radical/gtod/radical-gtod'
-try:
-    from distutils.ccompiler import new_compiler
+src = '%s/gtod.c'       % mod_root
+tgt = '%s/radical-gtod' % mod_root
 
-    compiler = new_compiler(verbose=1)
-    objs     = compiler.compile(sources=[src])
-    exe      = compiler.link_executable(objs, tgt)
+# try a static build
+if not os.path.exists(tgt):
+    try:
+        compiler = sh_callout('which gcc')[0].decode().strip()
 
-    # test the resulting binary - and if it does not seem to work, replace it
-    # by a shell script which provides a poor-man's version of the C code.
-    now_1 = time.time()
-    out, _, _ = sh_callout(tgt)
-    now_2 = time.time()
-    now   = float(out)
+        if not compiler:
+            compiler = sh_callout('which cc')[0].decode().strip()
 
-    assert(now_1 <= now  )
-    assert(now   <= now_2)
-    assert(now_2  - now_1 <= 1.)
+        assert compiler, 'no compiler found'
 
-except:
-    # need a replacement
+        sh_callout('%s -static -o %s %s' % (compiler, tgt, src))
+
+    except:
+        pass
+
+# try a dynamic build with distutils
+if not os.path.exists(tgt):
+    try:
+        from distutils.ccompiler import new_compiler
+
+        compiler = new_compiler(verbose=1)
+        objs     = compiler.compile(sources=[src])
+        exe      = compiler.link_executable(objs, tgt)
+
+        # test the resulting binary - and if it does not seem to work, replace it
+        # by a shell script which provides a poor-man's version of the C code.
+        now_1 = time.time()
+        out, _, _ = sh_callout(tgt)
+        now_2 = time.time()
+        now   = float(out)
+
+        assert(now_1 <= now  )
+        assert(now   <= now_2)
+        assert(now_2  - now_1 <= 1.)
+
+    except:
+        pass
+
+# as fallback, use a simple shell script
+if not os.path.exists(tgt):
+
     with open(tgt, 'w') as fout:
         fout.write('''#!/bin/sh
 
@@ -181,7 +203,6 @@ fi
         fout.write('# [WARNING] Exception during compilation:\n')
         fout.write('# %s\n' % '\n# '.join(traceback.format_exc().splitlines()))
     os.system('chmod 0755 %s' % tgt)
-
 
 
 # ------------------------------------------------------------------------------
