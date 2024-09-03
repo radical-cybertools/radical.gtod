@@ -112,3 +112,4 @@ Version 0.0.1 release                                                 2020-07-25
 --------------------------------------------------------------------------------
 
   - (HEAD -> master, origin/devel, origin/HEAD, devel) devel version bump
+  - (HEAD -> master, origin/devel, origin/HEAD, devel) devel version bump 
