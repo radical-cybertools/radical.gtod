@@ -7,7 +7,7 @@
             ?q=is%3Aissue+is%3Aopen+
     
 
-1.80.0 Release                                                        2024-09-03
+1.81.0 Release                                                        2024-09-03
 --------------------------------------------------------------------------------
 
   - maintenance release
@@ -112,4 +112,5 @@ Version 0.0.1 release                                                 2020-07-25
 --------------------------------------------------------------------------------
 
   - (HEAD -> master, origin/devel, origin/HEAD, devel) devel version bump
-  - (HEAD -> master, origin/devel, origin/HEAD, devel) devel version bump 
+  - (HEAD -> master, origin/devel, origin/HEAD, devel) devel version bump
+  - (HEAD -> master, origin/devel, origin/HEAD, devel) devel version bump
