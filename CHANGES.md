@@ -7,6 +7,12 @@
             ?q=is%3Aissue+is%3Aopen+
     
 
+1.90.0 Release                                                        2024-12-16
+--------------------------------------------------------------------------------
+
+  - remove MacOS support
+
+
 1.81.0 Release                                                        2024-09-03
 --------------------------------------------------------------------------------
 
@@ -111,6 +117,3 @@ Version 0.0.1 release                                                 2020-07-25
     
 --------------------------------------------------------------------------------
 
-  - (HEAD -> master, origin/devel, origin/HEAD, devel) devel version bump
-  - (HEAD -> master, origin/devel, origin/HEAD, devel) devel version bump
-  - (HEAD -> master, origin/devel, origin/HEAD, devel) devel version bump
