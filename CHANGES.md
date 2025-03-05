@@ -7,7 +7,7 @@
             ?q=is%3Aissue+is%3Aopen+
     
 
-1.100.0 Release                                                       2025-03-05
+1.100.1 Release                                                       2025-03-05
 --------------------------------------------------------------------------------
 
   - maintenance release
@@ -123,3 +123,4 @@ Version 0.0.1 release                                                 2020-07-25
     
 --------------------------------------------------------------------------------
 
+  - (HEAD -> master, origin/devel, origin/HEAD, devel) devel version bump
